@@ -16,8 +16,6 @@ CHUNK_SIZE = 65536  # 64k
 
 
 @click.command(help="Import tool data bundle. URI can be a path to a zipped file or directory.")
-@click.option("--retry-backoff", type=float, default=1.0, help="Retry backoff")
-@click.option("--retry-count", type=int, default=5, help="Number of times to retry http failures")
 @click.option("--tool-data-path", type=click.Path(exists=True, resolve_path=True), help="Path were bundle data should be written to")
 @click.option("--data-table-config-path", type=click.Path(exists=True, resolve_path=True), help="Path to tool_data_table_conf.xml file")
 @click.option(
@@ -26,9 +24,17 @@ CHUNK_SIZE = 65536  # 64k
     type=click.Path(exists=True, resolve_path=True),
     help="loc file to append data to. Must be be loaded in general data tables",
 )
+@click.option("--retry-backoff", type=float, default=1.0, help="Retry backoff")
+@click.option("--retry-count", type=int, default=5, help="Number of times to retry http failures")
 @click.argument("uri")
-def run_import_data_bundle(uri: str, tool_data_path: str, data_table_config_path: str, tool_data_file_path:
-                           Optional[str] = None, retry_count: int, retry_backoff: int):
+def run_import_data_bundle(
+        uri: str,
+        retry_count: int,
+        retry_backoff: int,
+        tool_data_path: str,
+        data_table_config_path: str,
+        tool_data_file_path: Optional[str] = None
+    ):
     table_manager = ToolDataTableManager(
         tool_data_path=tool_data_path,
         config_filename=data_table_config_path,
